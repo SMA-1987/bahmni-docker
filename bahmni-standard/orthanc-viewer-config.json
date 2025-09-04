@@ -1,0 +1,7 @@
+{
+  "pacs": {
+    "enable": true,
+    "restApiUrl": "http://orthanc:8042",
+    "viewerUrl": "http://localhost:8042/app/explorer.html#study?uuid={{studyInstanceUid}}"
+  }
+}

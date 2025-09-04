@@ -30,6 +30,7 @@ pacs_integration_db_backup_file_path=$backup_subfolder_path/pacs_integrationdb_b
 openmrs_service_name="openmrs"
 reports_service_name="reports"
 dcm4chee_service_name="dcm4chee"
+orthanc_service_name="orthanc"
 openmrs_db_service_name="openmrsdb"
 reports_db_service_name="reportsdb"
 openelis_db_service_name="openelisdb"
@@ -87,4 +88,7 @@ backup_container_file_system $odoo_service_name "/var/lib/odoo/filestore" "$BACK
 
 log_info "Taking backup for DCM4CHEE Archive"
 backup_container_file_system $dcm4chee_service_name "/var/lib/bahmni/dcm4chee/server/default/archive/." "$BACKUP_ROOT_FOLDER/dcm4chee_archive"
+
+log_info "Taking backup for Orthanc Storage"
+backup_container_file_system $orthanc_service_name "/var/lib/orthanc/db/." "$BACKUP_ROOT_FOLDER/orthanc_db"
 

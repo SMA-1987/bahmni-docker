@@ -2,7 +2,7 @@
 
 Refer this [Wiki Page](https://bahmni.atlassian.net/wiki/spaces/BAH/pages/299630726/Running+Bahmni+on+Docker) for Running Bahmni on Docker for detailed instructions.
 
-## Running Bahmni LITE or STANDARD using docker compose: 
+## Running Bahmni LITE or STANDARD using docker compose:
 1. Navigate to the relevant subfolder for your desired configuration. For example: `cd bahmni-lite`.
 2. Execute the script: `./run-bahmni.sh`. This script provides various options such as start, stop, view logs, pull updates, reset, etc.
 3. Before executing the above commands, ensure that your `.env` file in the sub-folder is correctly configured with the appropriate PROFILE.
@@ -36,3 +36,18 @@ run-bahmni.sh .env.local
 Please choose the appropriate environment variables file based on your requirements and make sure the respective `.env` or `.env-dev` file is properly configured before running the commands.
 
 For detailed instructions and further information, please refer to the [Wiki Page](https://bahmni.atlassian.net/wiki/spaces/BAH/pages/299630726/Running+Bahmni+on+Docker) mentioned above.
+
+## Orthanc PACS Integration
+
+The `bahmni-standard` compose file now includes an [Orthanc](https://www.orthanc-server.com/) service for handling DICOM images. Orthanc exposes the HTTP interface on port `8042` and the DICOM listener on port `4242`. Default credentials are `admin`/`orthanc` and the data is persisted in the `orthanc-data` Docker volume.
+
+The PACS integration container is configured to communicate with Orthanc by default. To customise the connection, update the following environment variables in the `.env` file:
+
+```
+PACS_SERVER_TYPE=ORTHANC
+PACS_SERVER_URL=http://orthanc:8042
+PACS_SERVER_USERNAME=admin
+PACS_SERVER_PASSWORD=orthanc
+```
+
+An example viewer configuration for Bahmni UI is provided at `bahmni-standard/orthanc-viewer-config.json` which points the viewer to the Orthanc web explorer.
