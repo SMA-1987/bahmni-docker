@@ -1,3 +1,5 @@
 {
-  "placeholder": "Add English translations here"
+  "languageSwitcher.label": "Language",
+  "language.en": "English",
+  "language.fa-AF": "Dari"
 }

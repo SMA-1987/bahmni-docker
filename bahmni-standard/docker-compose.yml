@@ -384,6 +384,7 @@ services:
     profiles: ["emr","bahmni-standard","bahmni-mart"]
     volumes:
       - "${CONFIG_VOLUME:?}:/usr/local/apache2/htdocs/bahmni_config/:ro"
+      - "../i18n:/usr/local/apache2/htdocs/i18n:ro"
     #   - "${BAHMNI_APPS_PATH:?}/ui/app/:/usr/local/apache2/htdocs/bahmni"
     #   - "${BAHMNI_APPS_PATH:?}/ui/node_modules/@bower_components/:/usr/local/apache2/htdocs/bahmni/components"
     environment:
@@ -391,6 +392,8 @@ services:
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_BAHMNI_WEB}
+      AVAILABLE_LANGUAGES: "en,fa-AF"
+      RTL_LANGUAGES: "fa-AF"
     logging: *log-config
     restart: ${RESTART_POLICY}
 
