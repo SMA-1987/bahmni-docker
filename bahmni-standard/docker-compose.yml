@@ -492,6 +492,21 @@ services:
     logging: *log-config
     restart: ${RESTART_POLICY}
 
+  orthanc:
+    image: orthanc/orthanc-plugins:${ORTHANC_IMAGE_TAG:-latest}
+    profiles: ["pacs","bahmni-standard"]
+    environment:
+      TZ: ${TZ}
+      ORTHANC__REMOTEACCESSALLOWED: "true"
+      ORTHANC__REGISTERED_USERS: '{"admin":"orthanc"}'
+    ports:
+      - '8042:8042'
+      - '4242:4242'
+    volumes:
+      - 'orthanc-data:/var/lib/orthanc/db'
+    logging: *log-config
+    restart: ${RESTART_POLICY}
+
   pacs-integration:
     image: bahmni/pacs-integration:${PACS_INTEGRATION_IMAGE_TAG:?}
     profiles: ["pacs","bahmni-standard"]
@@ -506,6 +521,10 @@ services:
       OPENMRS_PORT: ${OPENMRS_PORT:?}
       OPENMRS_ATOMFEED_USER: ${OPENMRS_ATOMFEED_USER:?}
       OPENMRS_ATOMFEED_PASSWORD: ${OPENMRS_ATOMFEED_PASSWORD:?}
+      PACS_SERVER_TYPE: ORTHANC
+      PACS_SERVER_URL: http://orthanc:8042
+      PACS_SERVER_USERNAME: admin
+      PACS_SERVER_PASSWORD: orthanc
     logging: *log-config
     restart: ${RESTART_POLICY}
 
@@ -533,8 +552,8 @@ services:
     environment:
       TZ: ${TZ}
       PACS_SIMULATOR_TIMEOUT: ${PACS_SIMULATOR_TIMEOUT:?}
-      PACS_SERVER_TYPE: ${PACS_SERVER_TYPE:?}
-      PACS_SERVER_URL: ${PACS_SERVER_URL:?}
+      PACS_SERVER_TYPE: ${PACS_SERVER_TYPE:-ORTHANC}
+      PACS_SERVER_URL: ${PACS_SERVER_URL:-http://orthanc:8042}
       UPDATE_PACS_INTEGRATION_DB: ${UPDATE_PACS_INTEGRATION_DB:?}
       PACS_INTEGRATION_DB_HOST: ${PACS_DB_HOST:?}
       PACS_INTEGRATION_DB_PORT: ${PACS_DB_PORT:?}
@@ -596,6 +615,7 @@ services:
         - 'bahmni-queued-reports:/mounts/bahmni-queued-reports'
         - 'bahmni-uploaded-files:/mounts/bahmni-uploaded-files'
         - 'dcm4chee-archive:/mounts/dcm4chee-archive'
+        - 'orthanc-data:/mounts/orthanc-data'
         - 'configuration_checksums:/mounts/configuration_checksums'
 
   ipd:
@@ -664,3 +684,4 @@ volumes:
   reportsdbdata:
   pacsdbdata:
   dcm4chee-config:
+  orthanc-data:
