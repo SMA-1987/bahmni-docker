@@ -37,6 +37,23 @@ services:
     logging: *log-config
     restart: ${RESTART_POLICY}
 
+  keycloak:
+    image: 'quay.io/keycloak/keycloak:${KEYCLOAK_IMAGE_TAG:?}'
+    command: start-dev
+    ports:
+      - '8081:8080'
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+      - '../apps/keycloak:/opt/keycloak/data/import'
+    environment:
+      TZ: ${TZ}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER:?}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM:?}
+      KEYCLOAK_CLIENTS: ${KEYCLOAK_CLIENTS:?}
+    logging: *log-config
+    restart: ${RESTART_POLICY}
+
   openelis:
     profiles: ["openelis","bahmni-standard"]
     image: 'bahmni/openelis:${OPENELIS_IMAGE_TAG:?[ERROR]}'
@@ -51,6 +68,9 @@ services:
       OPENMRS_ATOMFEED_USER: ${OPENMRS_ATOMFEED_USER:?}
       OPENMRS_ATOMFEED_PASSWORD: ${OPENMRS_ATOMFEED_PASSWORD:?}
       OPENELIS_DB_SERVER: ${OPENELIS_DB_SERVER}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_OPENELIS}
     depends_on:
       openelisdb:
         condition: service_healthy
@@ -96,6 +116,9 @@ services:
       HOST: ${ODOO_DB_HOST}
       USER: ${ODOO_DB_USER}
       PASSWORD: ${ODOO_DB_PASSWORD}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ODOO}
     logging: *log-config
     restart: ${RESTART_POLICY}
 
@@ -248,6 +271,9 @@ services:
       OMRS_DB_EXTRA_ARGS: ${OMRS_DB_EXTRA_ARGS}
       LUCENE_MATCH_TYPE: ${LUCENE_MATCH_TYPE}
       DOCUMENT_MAX_SIZE_MB: ${DOCUMENT_MAX_SIZE_MB}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_OPENMRS}
     #ports:
       # - ${OMRS_DEV_DEBUG_PORT}:${OMRS_DEV_DEBUG_PORT}
     volumes:
@@ -360,6 +386,11 @@ services:
       - "${CONFIG_VOLUME:?}:/usr/local/apache2/htdocs/bahmni_config/:ro"
     #   - "${BAHMNI_APPS_PATH:?}/ui/app/:/usr/local/apache2/htdocs/bahmni"
     #   - "${BAHMNI_APPS_PATH:?}/ui/node_modules/@bower_components/:/usr/local/apache2/htdocs/bahmni/components"
+    environment:
+      TZ: ${TZ}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_BAHMNI_WEB}
     logging: *log-config
     restart: ${RESTART_POLICY}
 
@@ -613,6 +644,7 @@ volumes:
   odooappdata:
   odoofilestore:
   odooconfig:
+  keycloak-data:
   odoo10dbdata:
   odoo10appdata:
   openmrs-data:
