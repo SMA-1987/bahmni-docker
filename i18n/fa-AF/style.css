@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic&display=swap');
+
+html[lang="fa-AF"] body {
+  direction: rtl;
+  font-family: 'Noto Naskh Arabic', sans-serif;
+}
