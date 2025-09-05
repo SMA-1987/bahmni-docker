@@ -1,0 +1,16 @@
+{
+  "name": {
+    "en": "NCD Form",
+    "fa-AF": "فرم NCD"
+  },
+  "fields": [
+    {
+      "id": "condition",
+      "type": "text",
+      "label": {
+        "en": "Condition",
+        "fa-AF": "حالت"
+      }
+    }
+  ]
+}
