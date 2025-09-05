@@ -47,6 +47,7 @@ function checkIfDirectoryIsCorrect {
 function start {
     echo "Executing command: 'docker compose up -d' with the images specified in the $file file"
     echo "Starting Bahmni with default profile from $file file"
+    echo "Module toggles: ${MODULE_TOGGLES}"
     docker compose --env-file "$file" up -d
 }
 
@@ -181,6 +182,14 @@ function shutdown {
 checkDockerAndDockerComposeVersion
 # Check Directory is correct
 checkIfDirectoryIsCorrect
+
+# Load module toggles configuration so docker compose can pass it to services
+MODULE_TOGGLES_FILE="../apps/module-toggles.json"
+if [ -f "$MODULE_TOGGLES_FILE" ]; then
+    export MODULE_TOGGLES=$(jq -c '.' "$MODULE_TOGGLES_FILE")
+else
+    echo "Warning: module toggles file not found at $MODULE_TOGGLES_FILE" >&2
+fi
 
 echo "Please select an option:"
 echo "------------------------"
