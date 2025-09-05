@@ -1,0 +1,16 @@
+{
+  "name": {
+    "en": "Mental Health Form",
+    "fa-AF": "فرم صحت روان"
+  },
+  "fields": [
+    {
+      "id": "mood",
+      "type": "text",
+      "label": {
+        "en": "Mood",
+        "fa-AF": "حالت روحی"
+      }
+    }
+  ]
+}

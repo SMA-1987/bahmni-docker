@@ -1,0 +1,10 @@
+{
+  "formDirectory": "../../forms",
+  "forms": [
+    { "formName": "OPD Form", "fileName": "opd.json" },
+    { "formName": "ANC Form", "fileName": "anc.json" },
+    { "formName": "NCD Form", "fileName": "ncd.json" },
+    { "formName": "Mental Health Form", "fileName": "mental-health.json" }
+  ],
+  "languages": ["en", "fa-AF"]
+}

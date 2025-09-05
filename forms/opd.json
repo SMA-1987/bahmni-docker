@@ -1,0 +1,16 @@
+{
+  "name": {
+    "en": "OPD Form",
+    "fa-AF": "فرم OPD"
+  },
+  "fields": [
+    {
+      "id": "symptom",
+      "type": "text",
+      "label": {
+        "en": "Symptom",
+        "fa-AF": "علامت"
+      }
+    }
+  ]
+}

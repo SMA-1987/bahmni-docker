@@ -1,0 +1,16 @@
+{
+  "name": {
+    "en": "ANC Form",
+    "fa-AF": "فرم ANC"
+  },
+  "fields": [
+    {
+      "id": "visit_date",
+      "type": "date",
+      "label": {
+        "en": "Visit Date",
+        "fa-AF": "تاریخ ویزیت"
+      }
+    }
+  ]
+}
