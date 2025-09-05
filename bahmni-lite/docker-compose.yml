@@ -15,6 +15,9 @@ x-log-config: &log-config
   # update this value to *loki if needed to see logs in grafana dashboard.
   <<: *default
 
+x-module-env: &module-env
+  MODULE_TOGGLES: ${MODULE_TOGGLES}
+
 services:
 
   proxy:
@@ -27,10 +30,13 @@ services:
     logging: *log-config
     restart: ${RESTART_POLICY}
     environment:
+      <<: *module-env
       TZ: ${TZ}
 
   bahmni-config:
     image: 'bahmni/clinic-config:${CONFIG_IMAGE_TAG:?}'
+    environment:
+      <<: *module-env
     volumes:
       - '${CONFIG_VOLUME:?}:/usr/local/bahmni_config'
     logging: *log-config
@@ -42,12 +48,14 @@ services:
     logging: *log-config
     restart: ${RESTART_POLICY}
     environment:
+      <<: *module-env
       TZ: ${TZ}
 
   openmrs:
     profiles: ["emr","bahmni-lite", "bahmni-mart"]
     image: bahmni/openmrs:${OPENMRS_IMAGE_TAG:?}
     environment:
+      <<: *module-env
       TZ: ${TZ}
       OMRS_DB_NAME: ${OPENMRS_DB_NAME:?}
       OMRS_DB_HOSTNAME: ${OPENMRS_DB_HOST:?}
@@ -101,6 +109,7 @@ services:
     profiles: ["emr","bahmni-lite", "metabase", "bahmni-mart"]
     command: --character-set-server=utf8 --collation-server=utf8_general_ci
     environment:
+      <<: *module-env
       TZ: ${TZ}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       MYSQL_DATABASE: ${OPENMRS_DB_NAME:?}
@@ -120,6 +129,7 @@ services:
     volumes:
      - 'crater-app-data:/var/www/storage/app/public'
     environment:
+      <<: *module-env
       TZ: ${TZ}
       APP_URL: ${CRATER_APP_URL:?}
       DB_HOST: ${CRATER_DB_HOST:?}
@@ -144,6 +154,7 @@ services:
     profiles: ["crater","bahmni-lite"]
     restart: unless-stopped
     environment:
+      <<: *module-env
       TZ: ${TZ}
     volumes:
      - 'crater-app-data:/var/www/public/storage'
@@ -160,6 +171,7 @@ services:
       # # and uncomment the line under this one.
       # - ./docker-compose/db/data:/var/lib/mysql:rw,delegated
     environment:
+      <<: *module-env
       TZ: ${TZ}
       MYSQL_USER: ${CRATER_DB_USERNAME:?}
       MYSQL_PASSWORD: ${CRATER_DB_PASSWORD:?}
@@ -172,6 +184,7 @@ services:
     restart: on-failure:[3]
     profiles: ["metabase", "bahmni-mart"]
     environment:
+      <<: *module-env
       TZ: ${TZ}
       POSTGRES_DB: ${METABASE_DB_NAME:?}
       POSTGRES_USER: ${METABASE_DB_USER:?}
@@ -185,6 +198,7 @@ services:
     restart: on-failure:[3]
     profiles: ["metabase", "bahmni-mart"]
     environment:
+      <<: *module-env
       TZ: ${TZ}
       MB_ADMIN_EMAIL: ${METABASE_ADMIN_EMAIL:?}
       MB_ADMIN_FIRST_NAME: ${METABASE_ADMIN_FIRST_NAME:?}
@@ -211,6 +225,7 @@ services:
     profiles: ["bahmni-mart"]
     restart: ${RESTART_POLICY}
     environment:
+      <<: *module-env
       TZ: ${TZ}
       POSTGRES_DB: ${MART_DB_NAME:?}
       POSTGRES_USER: ${MART_DB_USERNAME:?}
@@ -224,6 +239,7 @@ services:
     profiles: ["bahmni-mart"]
     restart: ${RESTART_POLICY}
     environment:
+      <<: *module-env
       TZ: ${TZ}
       CRON_TIME: ${MART_CRON_TIME:?}
       MART_DB_HOST: ${MART_DB_HOST:?}
@@ -252,6 +268,7 @@ services:
     #   - "${BAHMNI_APPS_PATH:?}/ui/app/:/usr/local/apache2/htdocs/bahmni"
     #   - "${BAHMNI_APPS_PATH:?}/ui/node_modules/@bower_components/:/usr/local/apache2/htdocs/bahmni/components"
     environment:
+      <<: *module-env
       TZ: ${TZ}
       AVAILABLE_LANGUAGES: "en,fa-AF"
       RTL_LANGUAGES: "fa-AF"
@@ -263,6 +280,8 @@ services:
     profiles: ["implementer-interface","emr","bahmni-lite"]
     #volumes:
     #  - "${IMPLEMENTER_INTERFACE_CODE_PATH:?}/dist:/usr/local/apache2/htdocs/implementer-interface"
+    environment:
+      <<: *module-env
     depends_on:
       - openmrs
     logging: *log-config
@@ -272,6 +291,7 @@ services:
     image: bahmni/reports:${REPORTS_IMAGE_TAG:?}
     profiles: ["reports","bahmni-lite","bahmni-mart"]
     environment:
+      <<: *module-env
       TZ: ${TZ}
       OPENMRS_DB_HOST: ${OPENMRS_DB_HOST:?}
       OPENMRS_DB_NAME: ${OPENMRS_DB_NAME:?}
@@ -300,6 +320,7 @@ services:
     image: ${REPORTS_DB_IMAGE_NAME:?}
     profiles: ["reports","bahmni-lite","bahmni-mart"]
     environment:
+      <<: *module-env
       TZ: ${TZ}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       MYSQL_DATABASE: ${REPORTS_DB_NAME:?}
@@ -318,6 +339,7 @@ services:
       - 'bahmni-lab-results:/usr/share/nginx/html/uploaded_results'
       - 'bahmni-uploaded-files:/usr/share/nginx/html/uploaded-files'
     environment:
+      <<: *module-env
       TZ: ${TZ}
       OPENMRS_HOST: ${OPENMRS_HOST:?}
     depends_on:
@@ -337,6 +359,7 @@ services:
     profiles: ["sms"]
     restart: ${RESTART_POLICY}
     environment:
+      <<: *module-env
       TZ: ${TZ}
       SMS_TOKEN: ${SMS_TOKEN}
       SMS_PROVIDER_API: ${SMS_PROVIDER_API}
@@ -352,6 +375,7 @@ services:
     profiles: ["atomfeed-console"]
     restart: ${RESTART_POLICY}
     environment:
+      <<: *module-env
       TZ: ${TZ}
       OPENMRS_DB_HOST: ${OPENMRS_DB_HOST}
       OPENMRS_DB_NAME: ${OPENMRS_DB_NAME}
@@ -363,6 +387,7 @@ services:
     profiles: ["crater","bahmni-lite"]
     restart: ${RESTART_POLICY}
     environment:
+      <<: *module-env
       TZ: ${TZ}
       OPENMRS_HOST: ${OPENMRS_HOST:?}
       OPENMRS_PORT: ${OPENMRS_PORT:?}
@@ -383,6 +408,7 @@ services:
     profiles: ["crater","bahmni-lite"]
     restart: ${RESTART_POLICY}
     environment:
+      <<: *module-env
       TZ: ${TZ}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${CRATER_ATOMFEED_DB_NAME:?}
@@ -393,6 +419,8 @@ services:
     image: bash:5.2.15
     profiles: ["restore"]
     command: "bash /restore_docker_volumes.sh"
+    environment:
+      <<: *module-env
     volumes:
         - "${RESTORE_ARTIFACTS_PATH}:/restore-artifacts"
         - '../backup_restore/restore_docker_volumes.sh:/restore_docker_volumes.sh'
@@ -408,6 +436,7 @@ services:
     profiles: [ "cdss" ]
     image: bahmni/cdss-reference:${CDSS_IMAGE_TAG:?}
     environment:
+      <<: *module-env
       JAVA_OPTS: ${CDSS_JAVA_SERVER_OPTS}
     logging: *log-config
 
@@ -415,6 +444,7 @@ services:
     profiles: [ "snowstorm-lite" ]
     image: snomedinternational/snowstorm-lite:${SNOWSTORM_LITE_IMAGE_TAG:?}
     environment:
+      <<: *module-env
       JDK_JAVA_OPTIONS: ${SNOWSTORM_LITE_JAVA_SERVER_OPTS}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/fhir/CodeSystem"]
@@ -428,6 +458,7 @@ services:
     image: alpine
     command: "sh /load-snowstorm-data.sh"
     environment:
+      <<: *module-env
       SNOWSTORM_LITE_ADMIN_PASSWORD: ${SNOWSTORM_LITE_ADMIN_PASSWORD:?}
     logging: *log-config
     volumes:

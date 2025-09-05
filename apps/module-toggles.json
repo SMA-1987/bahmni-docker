@@ -1,0 +1,6 @@
+{
+  "registration": true,
+  "billing": false,
+  "reports": true,
+  "appointments": true
+}
